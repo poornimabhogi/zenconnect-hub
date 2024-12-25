@@ -15,6 +15,13 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/marketplace" element={<div>Marketplace (Coming Soon)</div>} />
+          <Route path="/social" element={<div>Social (Coming Soon)</div>} />
+          <Route path="/games" element={<div>Games (Coming Soon)</div>} />
+          <Route path="/health" element={<div>Health (Coming Soon)</div>} />
+          <Route path="/profile" element={<div>Profile (Coming Soon)</div>} />
+          <Route path="/zencoins" element={<div>Zencoins (Coming Soon)</div>} />
+          <Route path="/lucky-draw" element={<div>Lucky Draw (Coming Soon)</div>} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
