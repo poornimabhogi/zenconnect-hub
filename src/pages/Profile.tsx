@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { UserPlus, Plus, Image as ImageIcon, Video, MessageSquare } from "lucide-react";
+import { UserPlus, Plus, Image as ImageIcon, Video } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import Layout from "@/components/Layout";
 
@@ -13,11 +13,10 @@ const Profile = () => {
   const [stories, setStories] = useState<{ id: number; type: "video" | "image"; url: string; timestamp: Date }[]>([]);
 
   const handleStoryUpload = () => {
-    // Simulating story upload - in real app, this would handle file upload
     const newStory = {
       id: stories.length + 1,
-      type: "image" as const, // Explicitly specify the literal type
-      url: "/placeholder.svg",
+      type: "image" as const,
+      url: "https://via.placeholder.com/150", // Using a reliable placeholder image service
       timestamp: new Date(),
     };
     setStories([newStory, ...stories]);
@@ -34,7 +33,6 @@ const Profile = () => {
     });
   };
 
-  // Filter stories less than 24 hours old
   const activeStories = stories.filter(
     (story) => new Date().getTime() - story.timestamp.getTime() < 24 * 60 * 60 * 1000
   );
@@ -42,11 +40,10 @@ const Profile = () => {
   return (
     <Layout>
       <div className="container max-w-2xl mx-auto px-4 py-6 space-y-6">
-        {/* Profile Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Avatar className="h-20 w-20">
-              <AvatarImage src="/placeholder.svg" alt="Profile" />
+              <AvatarImage src="https://via.placeholder.com/80" alt="Profile" />
               <AvatarFallback>UN</AvatarFallback>
             </Avatar>
             <div>
@@ -60,7 +57,6 @@ const Profile = () => {
           </Button>
         </div>
 
-        {/* Stories Section */}
         <Card className="p-4">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Stories</h2>
@@ -86,12 +82,11 @@ const Profile = () => {
           </ScrollArea>
         </Card>
 
-        {/* Post Creation Card */}
         <Card className="p-4">
           <div className="space-y-4">
             <div className="flex gap-4 items-center">
               <Avatar>
-                <AvatarImage src="/placeholder.svg" alt="Profile" />
+                <AvatarImage src="https://via.placeholder.com/40" alt="Profile" />
                 <AvatarFallback>UN</AvatarFallback>
               </Avatar>
               <Input
@@ -118,7 +113,6 @@ const Profile = () => {
           </div>
         </Card>
 
-        {/* Posts Section Placeholder */}
         <div className="space-y-4">
           <h2 className="text-lg font-semibold">Posts</h2>
           <Card className="p-4">
