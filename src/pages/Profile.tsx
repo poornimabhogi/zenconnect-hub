@@ -10,13 +10,13 @@ import Layout from "@/components/Layout";
 
 const Profile = () => {
   const { toast } = useToast();
-  const [stories, setStories] = useState<{ id: number; type: "image" | "video"; url: string; timestamp: Date }[]>([]);
+  const [stories, setStories] = useState<{ id: number; type: "video" | "image"; url: string; timestamp: Date }[]>([]);
 
   const handleStoryUpload = () => {
     // Simulating story upload - in real app, this would handle file upload
     const newStory = {
       id: stories.length + 1,
-      type: "image",
+      type: "image" as const, // Explicitly specify the literal type
       url: "/placeholder.svg",
       timestamp: new Date(),
     };
