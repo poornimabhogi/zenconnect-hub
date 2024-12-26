@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import GameBoard from "./GameBoard";
 
 type Board = number[][];
 
@@ -11,7 +12,6 @@ const Game2048 = () => {
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
 
-  // Initialize board
   useEffect(() => {
     initializeBoard();
   }, []);
@@ -22,16 +22,16 @@ const Game2048 = () => {
       if (!gameOver) {
         switch (event.key) {
           case "ArrowUp":
-            moveUp();
+            moveBoard('up');
             break;
           case "ArrowDown":
-            moveDown();
+            moveBoard('down');
             break;
           case "ArrowLeft":
-            moveLeft();
+            moveBoard('left');
             break;
           case "ArrowRight":
-            moveRight();
+            moveBoard('right');
             break;
         }
       }
@@ -113,17 +113,10 @@ const Game2048 = () => {
     }
   };
 
-  const moveUp = () => moveBoard('up');
-  const moveDown = () => moveBoard('down');
-  const moveLeft = () => moveBoard('left');
-  const moveRight = () => moveBoard('right');
-
   const checkGameOver = (currentBoard: Board) => {
-    // Check if board is full
     const isFull = currentBoard.every(row => row.every(cell => cell !== 0));
     if (!isFull) return;
 
-    // Check if any moves are possible
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
         const current = currentBoard[i][j];
@@ -168,33 +161,12 @@ const Game2048 = () => {
       </div>
 
       <Card className="p-4 bg-gray-100">
-        <div className="grid grid-cols-4 gap-2 w-full max-w-md">
-          {board.map((row, i) =>
-            row.map((cell, j) => (
-              <div
-                key={`${i}-${j}`}
-                className={`${
-                  getTileColor(cell)
-                } w-16 h-16 flex items-center justify-center rounded-lg text-2xl font-bold transition-colors duration-100 ${
-                  cell === 0 ? "text-transparent" : "text-gray-800"
-                }`}
-              >
-                {cell || 0}
-              </div>
-            ))
-          )}
-        </div>
+        <GameBoard
+          board={board}
+          getTileColor={getTileColor}
+          onMove={moveBoard}
+        />
       </Card>
-
-      {/* Mobile Controls */}
-      <div className="md:hidden grid grid-cols-3 gap-2 mt-4">
-        <div></div>
-        <Button onClick={moveUp} className="w-full">↑</Button>
-        <div></div>
-        <Button onClick={moveLeft} className="w-full">←</Button>
-        <Button onClick={moveDown} className="w-full">↓</Button>
-        <Button onClick={moveRight} className="w-full">→</Button>
-      </div>
 
       {gameOver && (
         <div className="mt-4 text-xl font-bold text-red-500">
