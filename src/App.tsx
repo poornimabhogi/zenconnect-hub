@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Marketplace from "./pages/Marketplace";
 import Profile from "./pages/Profile";
+import Social from "./pages/Social";
 
 const queryClient = new QueryClient();
 
@@ -18,7 +19,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/marketplace" element={<Marketplace />} />
-          <Route path="/social" element={<div>Social (Coming Soon)</div>} />
+          <Route path="/social" element={<Social />} />
           <Route path="/games" element={<div>Games (Coming Soon)</div>} />
           <Route path="/health" element={<div>Health (Coming Soon)</div>} />
           <Route path="/profile" element={<Profile />} />
