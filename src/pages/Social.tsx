@@ -3,7 +3,7 @@ import Layout from "@/components/Layout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Search, UserPlus, UserCheck } from "lucide-react";
+import { Search, UserPlus, UserCheck, ArrowLeft } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
 interface Video {
@@ -71,6 +71,10 @@ const Social = () => {
     setIsDarkMode(true);
   };
 
+  const handleBackClick = () => {
+    setIsDarkMode(false);
+  };
+
   const handleSwipe = (direction: 'up' | 'down') => {
     setCurrentVideoIndex(prev => {
       if (direction === 'up' && prev < videos.length - 1) return prev + 1;
@@ -88,6 +92,15 @@ const Social = () => {
   return (
     <Layout>
       <div className={`min-h-screen ${isDarkMode ? 'bg-black text-white' : 'bg-gray-50'}`}>
+        {isDarkMode && (
+          <button
+            onClick={handleBackClick}
+            className="fixed top-20 left-4 z-50 p-2 rounded-full bg-gray-800/50 text-white hover:bg-gray-700/50 transition-colors"
+          >
+            <ArrowLeft size={24} />
+          </button>
+        )}
+        
         <div className="sticky top-16 z-10 bg-white dark:bg-gray-900 p-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
