@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,6 +7,7 @@ import { useToast } from "@/components/ui/use-toast";
 import ProductList from "@/components/marketplace/ProductList";
 import CategoryList from "@/components/marketplace/CategoryList";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
 
 export type Product = {
   id: string;
@@ -20,8 +21,34 @@ export type Product = {
 const Marketplace = () => {
   const { toast } = useToast();
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [wishlistCount, setWishlistCount] = useState(0);
 
-  // Temporary mock data
+  // Load wishlist count from localStorage
+  useEffect(() => {
+    const savedWishlist = localStorage.getItem('wishlist');
+    if (savedWishlist) {
+      const wishlistItems = JSON.parse(savedWishlist);
+      setWishlistCount(wishlistItems.length);
+    }
+  }, []);
+
+  // Watch for changes in localStorage
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const savedWishlist = localStorage.getItem('wishlist');
+      if (savedWishlist) {
+        const wishlistItems = JSON.parse(savedWishlist);
+        setWishlistCount(wishlistItems.length);
+      } else {
+        setWishlistCount(0);
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  // Categories and products mock data
   const categories = [
     "All",
     "Electronics",
@@ -78,14 +105,24 @@ const Marketplace = () => {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Marketplace</h1>
           <div className="flex gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleWishlist}
-              className="text-gray-600 hover:text-zenpurple"
-            >
-              <Heart className="h-5 w-5" />
-            </Button>
+            <div className="relative">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleWishlist}
+                className="text-gray-600 hover:text-zenpurple"
+              >
+                <Heart className="h-5 w-5" />
+              </Button>
+              {wishlistCount > 0 && (
+                <Badge 
+                  variant="destructive" 
+                  className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs rounded-full"
+                >
+                  {wishlistCount}
+                </Badge>
+              )}
+            </div>
             <Button
               variant="ghost"
               size="icon"
