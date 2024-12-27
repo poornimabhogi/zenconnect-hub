@@ -118,7 +118,7 @@ const Marketplace = () => {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Marketplace</h1>
           <div className="flex gap-2">
-            <div className="relative">
+            <div className="relative inline-flex items-center justify-center">
               <Button
                 variant="ghost"
                 size="icon"
