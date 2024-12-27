@@ -8,6 +8,12 @@ import ProductList from "@/components/marketplace/ProductList";
 import CategoryList from "@/components/marketplace/CategoryList";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export type Product = {
   id: string;
@@ -22,13 +28,15 @@ const Marketplace = () => {
   const { toast } = useToast();
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [wishlistCount, setWishlistCount] = useState(0);
+  const [showWishlist, setShowWishlist] = useState(false);
+  const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
 
   // Load wishlist count from localStorage
   useEffect(() => {
     const savedWishlist = localStorage.getItem('wishlist');
     if (savedWishlist) {
-      const wishlistItems = JSON.parse(savedWishlist);
-      setWishlistCount(wishlistItems.length);
+      const wishlistIds = JSON.parse(savedWishlist);
+      setWishlistCount(wishlistIds.length);
     }
   }, []);
 
@@ -37,8 +45,8 @@ const Marketplace = () => {
     const handleStorageChange = () => {
       const savedWishlist = localStorage.getItem('wishlist');
       if (savedWishlist) {
-        const wishlistItems = JSON.parse(savedWishlist);
-        setWishlistCount(wishlistItems.length);
+        const wishlistIds = JSON.parse(savedWishlist);
+        setWishlistCount(wishlistIds.length);
       } else {
         setWishlistCount(0);
       }
@@ -78,24 +86,29 @@ const Marketplace = () => {
     // Add more mock products as needed
   ];
 
-  const handleSell = () => {
-    toast({
-      title: "Coming Soon",
-      description: "Sell functionality will be available soon!",
-    });
-  };
-
   const handleWishlist = () => {
-    toast({
-      title: "Coming Soon",
-      description: "Wishlist functionality will be available soon!",
-    });
+    const savedWishlist = localStorage.getItem('wishlist');
+    if (savedWishlist) {
+      const wishlistIds = JSON.parse(savedWishlist);
+      const items = products.filter(product => wishlistIds.includes(product.id));
+      setWishlistItems(items);
+    } else {
+      setWishlistItems([]);
+    }
+    setShowWishlist(true);
   };
 
   const handleCart = () => {
     toast({
       title: "Coming Soon",
       description: "Cart functionality will be available soon!",
+    });
+  };
+
+  const handleSell = () => {
+    toast({
+      title: "Coming Soon",
+      description: "Sell functionality will be available soon!",
     });
   };
 
@@ -151,6 +164,38 @@ const Marketplace = () => {
         </Card>
 
         <ProductList products={products} selectedCategory={selectedCategory} />
+
+        <Dialog open={showWishlist} onOpenChange={setShowWishlist}>
+          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>My Wishlist</DialogTitle>
+            </DialogHeader>
+            {wishlistItems.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {wishlistItems.map((item) => (
+                  <Card key={item.id} className="flex flex-col">
+                    <CardContent className="p-4">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-full h-32 object-cover rounded-md mb-2"
+                      />
+                      <h3 className="font-medium">{item.name}</h3>
+                      <p className="text-sm text-gray-600">{item.description}</p>
+                      <p className="text-zenpurple font-bold mt-2">
+                        ${item.price.toFixed(2)}
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <p className="text-center text-gray-500 py-8">
+                Your wishlist is empty
+              </p>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </Layout>
   );
