@@ -2,23 +2,37 @@ import Layout from "@/components/Layout";
 import { Clock, Target, Users, Heart } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useEffect, useState } from "react";
 
 const Index = () => {
-  // Mock data for wishlist items - in a real app this would come from your state management
-  const wishlistItems = [
-    {
-      id: "1",
-      name: "Wireless Earbuds",
-      price: 99.99,
-      image: "/placeholder.svg"
-    },
-    {
-      id: "2",
-      name: "Zen T-Shirt",
-      price: 29.99,
-      image: "/placeholder.svg"
+  const [wishlistItems, setWishlistItems] = useState<any[]>([]);
+
+  // Load wishlist items from localStorage
+  useEffect(() => {
+    const savedWishlist = localStorage.getItem('wishlist');
+    if (savedWishlist) {
+      const wishlistIds = JSON.parse(savedWishlist);
+      // Mock data - in a real app, you would fetch the actual product data
+      const mockProducts = [
+        {
+          id: "1",
+          name: "Wireless Earbuds",
+          price: 99.99,
+          image: "/placeholder.svg"
+        },
+        {
+          id: "2",
+          name: "Zen T-Shirt",
+          price: 29.99,
+          image: "/placeholder.svg"
+        }
+      ];
+      const filteredProducts = mockProducts.filter(product => 
+        wishlistIds.includes(product.id)
+      );
+      setWishlistItems(filteredProducts);
     }
-  ];
+  }, []);
 
   return (
     <Layout>

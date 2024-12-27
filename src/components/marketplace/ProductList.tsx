@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import { useState, useEffect } from "react";
 import type { Product } from "@/pages/Marketplace";
 
 interface ProductListProps {
@@ -17,6 +18,20 @@ interface ProductListProps {
 
 const ProductList = ({ products, selectedCategory }: ProductListProps) => {
   const { toast } = useToast();
+  const [wishlist, setWishlist] = useState<string[]>([]);
+
+  // Load wishlist from localStorage on component mount
+  useEffect(() => {
+    const savedWishlist = localStorage.getItem('wishlist');
+    if (savedWishlist) {
+      setWishlist(JSON.parse(savedWishlist));
+    }
+  }, []);
+
+  // Save wishlist to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('wishlist', JSON.stringify(wishlist));
+  }, [wishlist]);
 
   const filteredProducts = products.filter(
     (product) =>
@@ -25,9 +40,22 @@ const ProductList = ({ products, selectedCategory }: ProductListProps) => {
   );
 
   const handleAddToWishlist = (productId: string) => {
-    toast({
-      title: "Added to Wishlist",
-      description: "This product has been added to your wishlist!",
+    setWishlist(prev => {
+      if (prev.includes(productId)) {
+        // Remove from wishlist if already added
+        toast({
+          title: "Removed from Wishlist",
+          description: "This product has been removed from your wishlist.",
+        });
+        return prev.filter(id => id !== productId);
+      } else {
+        // Add to wishlist
+        toast({
+          title: "Added to Wishlist",
+          description: "This product has been added to your wishlist!",
+        });
+        return [...prev, productId];
+      }
     });
   };
 
@@ -46,10 +74,18 @@ const ProductList = ({ products, selectedCategory }: ProductListProps) => {
             <Button
               variant="ghost"
               size="icon"
-              className="absolute top-2 right-2 text-gray-400 hover:text-red-500"
+              className={`absolute top-2 right-2 ${
+                wishlist.includes(product.id)
+                  ? "text-red-500 hover:text-red-600"
+                  : "text-gray-400 hover:text-red-500"
+              }`}
               onClick={() => handleAddToWishlist(product.id)}
             >
-              <Heart className="h-5 w-5" />
+              <Heart
+                className={`h-5 w-5 ${
+                  wishlist.includes(product.id) ? "fill-current" : ""
+                }`}
+              />
             </Button>
             <img
               src={product.image}
