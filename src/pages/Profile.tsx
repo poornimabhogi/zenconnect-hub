@@ -46,9 +46,9 @@ const Profile = () => {
 
   const handlePostSubmit = () => {
     if (newPost.trim()) {
-      const post = {
+      const post: Post = {
         id: posts.length + 1,
-        type: "text",
+        type: "text" as const,
         content: newPost,
         timestamp: new Date(),
       };
