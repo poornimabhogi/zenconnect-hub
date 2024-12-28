@@ -4,19 +4,30 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { UserPlus, Plus, Image as ImageIcon, Video } from "lucide-react";
+import { UserPlus, Plus, Image as ImageIcon, Video, Grid, ArrowDown } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import Layout from "@/components/Layout";
+import { useSwipe } from "@/hooks/use-swipe";
+
+interface Post {
+  id: number;
+  type: "text" | "image" | "video";
+  content: string;
+  timestamp: Date;
+}
 
 const Profile = () => {
   const { toast } = useToast();
   const [stories, setStories] = useState<{ id: number; type: "video" | "image"; url: string; timestamp: Date }[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [viewStyle, setViewStyle] = useState<"feed" | "grid">("feed");
+  const [newPost, setNewPost] = useState("");
 
   const handleStoryUpload = () => {
     const newStory = {
       id: stories.length + 1,
       type: "image" as const,
-      url: "https://via.placeholder.com/150", // Using a reliable placeholder image service
+      url: "https://via.placeholder.com/150",
       timestamp: new Date(),
     };
     setStories([newStory, ...stories]);
@@ -33,9 +44,82 @@ const Profile = () => {
     });
   };
 
+  const handlePostSubmit = () => {
+    if (newPost.trim()) {
+      const post = {
+        id: posts.length + 1,
+        type: "text",
+        content: newPost,
+        timestamp: new Date(),
+      };
+      setPosts([post, ...posts]);
+      setNewPost("");
+      toast({
+        title: "Post created",
+        description: "Your post has been published successfully",
+      });
+    }
+  };
+
+  const { handleTouchStart, handleTouchEnd } = useSwipe({
+    onSwipeDown: () => setViewStyle("feed"),
+  });
+
   const activeStories = stories.filter(
     (story) => new Date().getTime() - story.timestamp.getTime() < 24 * 60 * 60 * 1000
   );
+
+  const renderPosts = () => {
+    if (posts.length === 0) {
+      return (
+        <Card className="p-4">
+          <p className="text-muted-foreground text-center py-8">
+            No posts yet
+          </p>
+        </Card>
+      );
+    }
+
+    if (viewStyle === "grid") {
+      return (
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {posts.map((post) => (
+            <Card key={post.id} className="overflow-hidden">
+              <div className="aspect-square bg-muted flex items-center justify-center">
+                {post.type === "text" ? (
+                  <p className="p-4 text-sm line-clamp-4">{post.content}</p>
+                ) : (
+                  <img src="https://via.placeholder.com/300" alt="Post content" className="w-full h-full object-cover" />
+                )}
+              </div>
+            </Card>
+          ))}
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-4" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+        {posts.map((post) => (
+          <Card key={post.id} className="p-4">
+            <div className="flex items-center gap-3 mb-4">
+              <Avatar className="h-8 w-8">
+                <AvatarImage src="https://via.placeholder.com/32" alt="Profile" />
+                <AvatarFallback>UN</AvatarFallback>
+              </Avatar>
+              <div className="text-sm">
+                <p className="font-medium">Username</p>
+                <p className="text-muted-foreground">
+                  {new Date(post.timestamp).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+            <p className="text-sm">{post.content}</p>
+          </Card>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <Layout>
@@ -91,13 +175,9 @@ const Profile = () => {
               </Avatar>
               <Input
                 placeholder="What's on your mind?"
+                value={newPost}
+                onChange={(e) => setNewPost(e.target.value)}
                 className="bg-muted"
-                onClick={() => {
-                  toast({
-                    title: "Create Post",
-                    description: "Post creation will be implemented soon",
-                  });
-                }}
               />
             </div>
             <div className="flex gap-2 justify-end">
@@ -109,17 +189,36 @@ const Profile = () => {
                 <Video className="h-4 w-4 mr-2" />
                 Video
               </Button>
+              <Button variant="default" size="sm" onClick={handlePostSubmit}>
+                Post
+              </Button>
             </div>
           </div>
         </Card>
 
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold">Posts</h2>
-          <Card className="p-4">
-            <p className="text-muted-foreground text-center py-8">
-              No posts yet
-            </p>
-          </Card>
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold">Posts</h2>
+            <div className="flex gap-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setViewStyle("grid")}
+                className={viewStyle === "grid" ? "text-primary" : ""}
+              >
+                <Grid className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setViewStyle("feed")}
+                className={viewStyle === "feed" ? "text-primary" : ""}
+              >
+                <ArrowDown className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+          {renderPosts()}
         </div>
       </div>
     </Layout>
