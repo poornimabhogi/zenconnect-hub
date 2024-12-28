@@ -14,9 +14,10 @@ import type { Product } from "@/pages/Marketplace";
 interface ProductListProps {
   products: Product[];
   selectedCategory: string;
+  onAddToCart: (productId: string) => void;
 }
 
-const ProductList = ({ products, selectedCategory }: ProductListProps) => {
+const ProductList = ({ products, selectedCategory, onAddToCart }: ProductListProps) => {
   const { toast } = useToast();
   const [wishlist, setWishlist] = useState<string[]>([]);
 
@@ -59,13 +60,6 @@ const ProductList = ({ products, selectedCategory }: ProductListProps) => {
     });
   };
 
-  const handleAddToCart = (productId: string) => {
-    toast({
-      title: "Added to Cart",
-      description: "This product has been added to your cart!",
-    });
-  };
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {filteredProducts.map((product) => (
@@ -103,7 +97,7 @@ const ProductList = ({ products, selectedCategory }: ProductListProps) => {
           <CardFooter className="p-4">
             <Button
               className="w-full bg-zenpurple hover:bg-zenpurple/90"
-              onClick={() => handleAddToCart(product.id)}
+              onClick={() => onAddToCart(product.id)}
             >
               Add to Cart
             </Button>

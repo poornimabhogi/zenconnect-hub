@@ -30,6 +30,7 @@ const Marketplace = () => {
   const [wishlistCount, setWishlistCount] = useState(0);
   const [showWishlist, setShowWishlist] = useState(false);
   const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
+  const [cartCount, setCartCount] = useState(0);
 
   // Load wishlist count from localStorage
   useEffect(() => {
@@ -112,6 +113,14 @@ const Marketplace = () => {
     });
   };
 
+  const handleAddToCart = (productId: string) => {
+    setCartCount(prev => prev + 1);
+    toast({
+      title: "Added to Cart",
+      description: "This product has been added to your cart!",
+    });
+  };
+
   return (
     <Layout>
       <div className="container mx-auto px-4 py-6">
@@ -136,14 +145,24 @@ const Marketplace = () => {
                 </Badge>
               )}
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleCart}
-              className="text-gray-600 hover:text-zenpurple"
-            >
-              <ShoppingCart className="h-5 w-5" />
-            </Button>
+            <div className="relative inline-flex items-center justify-center">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleCart}
+                className="text-gray-600 hover:text-zenpurple"
+              >
+                <ShoppingCart className="h-5 w-5" />
+              </Button>
+              {cartCount > 0 && (
+                <Badge 
+                  variant="destructive" 
+                  className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs rounded-full"
+                >
+                  {cartCount}
+                </Badge>
+              )}
+            </div>
             <Button onClick={handleSell} className="bg-zenpurple hover:bg-zenpurple/90">
               <Plus className="h-5 w-5 mr-1" />
               Sell
@@ -163,7 +182,11 @@ const Marketplace = () => {
           </CardContent>
         </Card>
 
-        <ProductList products={products} selectedCategory={selectedCategory} />
+        <ProductList 
+          products={products} 
+          selectedCategory={selectedCategory} 
+          onAddToCart={handleAddToCart}
+        />
 
         <Dialog open={showWishlist} onOpenChange={setShowWishlist}>
           <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
