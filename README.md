@@ -1,69 +1,66 @@
-# Welcome to your Lovable project
+# Full Stack Application
 
-## Project info
+This is a full-stack application with a React frontend and NestJS backend.
 
-**URL**: https://lovable.dev/projects/ac291510-5f2a-4560-84b0-50ad147779c9
+## Project Structure
 
-## How can I edit this code?
+```
+full-stack-app/
+├── client/          # React frontend
+└── server/          # NestJS backend
+```
 
-There are several ways of editing your application.
+## Getting Started
 
-**Use Lovable**
+### Backend (NestJS)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/ac291510-5f2a-4560-84b0-50ad147779c9) and start prompting.
+1. Navigate to the server directory:
+```bash
+cd server
+```
 
-Changes made via Lovable will be committed automatically to this repo.
+2. Install dependencies:
+```bash
+npm install
+```
 
-**Use your preferred IDE**
+3. Set up your PostgreSQL database and update the .env file with your database credentials.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+4. Start the development server:
+```bash
+npm run start:dev
+```
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+The server will be running on http://localhost:3000
 
-Follow these steps:
+### Frontend (React)
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+1. Navigate to the client directory:
+```bash
+cd client
+```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+2. Install dependencies:
+```bash
+npm install
+```
 
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+3. Start the development server:
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The frontend will be running on http://localhost:5173
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Features
 
-**Use GitHub Codespaces**
+- User authentication with JWT
+- PostgreSQL database with TypeORM
+- API documentation with Swagger
+- React frontend with TypeScript
+- Tailwind CSS for styling
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## API Documentation
 
-## What technologies are used for this project?
-
-This project is built with .
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/ac291510-5f2a-4560-84b0-50ad147779c9) and click on Share -> Publish.
-
-## I want to use a custom domain - is that possible?
-
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+Once the server is running, you can access the Swagger API documentation at:
+http://localhost:3000/api
