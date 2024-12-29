@@ -2,6 +2,7 @@ import { User, Coins, Gift } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const TopNav = () => {
   const { user, logout } = useAuth();
@@ -9,8 +10,14 @@ const TopNav = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 py-3 px-6 flex justify-between items-center z-50">
       {user ? (
-        <Link to="/profile" className="text-gray-700">
-          <User size={24} />
+        <Link to="/profile" className="flex items-center gap-2 text-gray-700 hover:text-gray-900">
+          <Avatar className="h-8 w-8">
+            <AvatarImage src={user.avatar || ""} />
+            <AvatarFallback>
+              <User size={20} />
+            </AvatarFallback>
+          </Avatar>
+          <span className="text-sm font-medium">{user.username}</span>
         </Link>
       ) : (
         <Link to="/login">
