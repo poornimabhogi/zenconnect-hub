@@ -3,6 +3,7 @@ import { Clock, Target, Users, Heart } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const [wishlistItems, setWishlistItems] = useState<any[]>([]);
@@ -37,14 +38,21 @@ const Index = () => {
   return (
     <Layout>
       <div className="p-4 space-y-6">
+        {/* Hero Section */}
+        <div className="text-center mb-8 animate-fade-in">
+          <h1 className="text-4xl font-bold text-zenpurple mb-4">TimeCapsule</h1>
+          <p className="text-lg text-gray-600 mb-6">Preserve your moments, connect with others, and build your digital legacy</p>
+          <Button className="bg-zenpurple hover:bg-zenpurple/90">Get Started</Button>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card className="p-4">
+          <Card className="p-4 hover:shadow-lg transition-shadow">
             <h2 className="text-lg font-semibold mb-3">Daily Activity</h2>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Clock className="text-zenpurple" />
                 <div>
-                  <p className="text-sm text-gray-600">Screen Time</p>
+                  <p className="text-sm text-gray-600">Time Captured</p>
                   <p className="font-semibold">2h 15m</p>
                 </div>
               </div>
@@ -58,28 +66,28 @@ const Index = () => {
             </div>
           </Card>
 
-          <Card className="p-4">
-            <h2 className="text-lg font-semibold mb-3">Connections</h2>
+          <Card className="p-4 hover:shadow-lg transition-shadow">
+            <h2 className="text-lg font-semibold mb-3">Time Travelers</h2>
             <div className="flex items-center gap-2">
               <Users className="text-zenpurple" />
               <div>
-                <p className="text-sm text-gray-600">Total Connections</p>
+                <p className="text-sm text-gray-600">Connected Travelers</p>
                 <p className="font-semibold">24</p>
               </div>
             </div>
           </Card>
         </div>
 
-        <Card className="p-4">
+        <Card className="p-4 hover:shadow-lg transition-shadow">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">Wishlist</h2>
+            <h2 className="text-lg font-semibold">Captured Moments</h2>
             <Heart className="text-zenpurple" />
           </div>
           {wishlistItems.length > 0 ? (
             <ScrollArea className="h-[300px]">
               <div className="grid grid-cols-2 gap-4">
                 {wishlistItems.map((item) => (
-                  <div key={item.id} className="bg-white rounded-lg shadow p-4">
+                  <div key={item.id} className="bg-white rounded-lg shadow p-4 hover:shadow-lg transition-shadow">
                     <img
                       src={item.image}
                       alt={item.name}
@@ -95,7 +103,7 @@ const Index = () => {
             </ScrollArea>
           ) : (
             <p className="text-gray-500 text-center py-8">
-              Your wishlist is empty
+              Start capturing moments to build your collection
             </p>
           )}
         </Card>
