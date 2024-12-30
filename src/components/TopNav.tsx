@@ -7,6 +7,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 const TopNav = () => {
   const { user, logout } = useAuth();
 
+  const displayName = user?.name || user?.username || user?.email;
+
   return (
     <nav className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 py-3 px-6 flex justify-between items-center z-50">
       {user ? (
@@ -17,7 +19,7 @@ const TopNav = () => {
               <User size={20} />
             </AvatarFallback>
           </Avatar>
-          <span className="text-sm font-medium">{user.name || user.username || user.email}</span>
+          <span className="text-sm font-medium">{displayName}</span>
         </Link>
       ) : (
         <Link to="/login">
