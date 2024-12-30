@@ -7,11 +7,13 @@ interface User {
   email: string;
   username: string;
   avatar?: string;
+  isGuest?: boolean;
 }
 
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
+  loginAsGuest: () => void;
   logout: () => void;
   isLoading: boolean;
   error: string | null;
@@ -19,7 +21,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const API_URL = "http://localhost:3000"; // Consider moving this to an environment variable
+const API_URL = "http://localhost:3000";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -45,6 +47,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(false);
   }, []);
 
+  const loginAsGuest = () => {
+    const guestUser: User = {
+      id: `guest-${Date.now()}`,
+      email: 'guest@example.com',
+      username: `Guest-${Math.floor(Math.random() * 1000)}`,
+      isGuest: true
+    };
+    
+    setUser(guestUser);
+    localStorage.setItem("user", JSON.stringify(guestUser));
+    
+    toast({
+      title: "Welcome, Guest!",
+      description: "You're browsing as a guest user.",
+    });
+    
+    navigate("/");
+  };
+
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     setError(null);
@@ -64,7 +85,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       const { user: userData, token } = await response.json();
       
-      // Store the token and user data
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(userData));
       
@@ -102,7 +122,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isLoading, error }}>
+    <AuthContext.Provider value={{ user, login, loginAsGuest, logout, isLoading, error }}>
       {children}
     </AuthContext.Provider>
   );

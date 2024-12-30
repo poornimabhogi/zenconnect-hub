@@ -4,11 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login, isLoading } = useAuth();
+  const { login, loginAsGuest, isLoading } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,6 +75,22 @@ const Login = () => {
             )}
           </Button>
         </form>
+
+        <div className="relative">
+          <Separator className="my-4" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="bg-white px-2 text-gray-500 text-sm">Or</span>
+          </div>
+        </div>
+
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={loginAsGuest}
+          disabled={isLoading}
+        >
+          Continue as Guest
+        </Button>
 
         <p className="text-center text-sm text-gray-600">
           Don't have an account?{" "}
