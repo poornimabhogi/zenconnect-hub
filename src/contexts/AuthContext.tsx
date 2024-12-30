@@ -106,9 +106,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     setError(null);
     try {
-      const { access_token, ...userData } = await authService.signup(email, password, name);
+      const { user: userData, token } = await authService.signup(email, password, name);
       
-      localStorage.setItem('token', access_token);
+      localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(userData));
       
       setUser(userData);
