@@ -3,7 +3,7 @@ import { User } from '@/types/auth.types';
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const authService = {
-  async login(email: string, password: string): Promise<{ user: User; token: string }> {
+  async login(email: string, password: string): Promise<{ user: User; access_token: string }> {
     const response = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
       headers: {

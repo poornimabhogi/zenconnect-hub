@@ -76,9 +76,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     setError(null);
     try {
-      const { user: userData, token } = await authService.login(email, password);
+      const { user: userData, access_token } = await authService.login(email, password);
       
-      localStorage.setItem('token', token);
+      localStorage.setItem('token', access_token);
       localStorage.setItem('user', JSON.stringify(userData));
       
       setUser(userData);
@@ -106,9 +106,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     setError(null);
     try {
-      const { user: userData, token } = await authService.signup(email, password, name);
+      const { user: userData, access_token } = await authService.signup(email, password, name);
       
-      localStorage.setItem('token', token);
+      localStorage.setItem('token', access_token);
       localStorage.setItem('user', JSON.stringify(userData));
       
       setUser(userData);
