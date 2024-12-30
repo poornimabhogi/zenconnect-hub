@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import { auth, googleProvider } from "@/lib/firebase";
+import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 
 interface User {
   id: string;
@@ -15,6 +17,7 @@ interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string, name: string) => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
   loginAsGuest: () => void;
   logout: () => void;
   isLoading: boolean;
@@ -31,7 +34,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check for existing session
     const token = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
     
@@ -47,24 +49,46 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(false);
   }, []);
 
-  const loginAsGuest = () => {
-    const guestUser: User = {
-      id: `guest-${Date.now()}`,
-      email: 'guest@example.com',
-      username: `Guest-${Math.floor(Math.random() * 1000)}`,
-      name: `Guest-${Math.floor(Math.random() * 1000)}`,
-      isGuest: true
-    };
-    
-    setUser(guestUser);
-    localStorage.setItem("user", JSON.stringify(guestUser));
-    
-    toast({
-      title: "Welcome, Guest!",
-      description: "You're browsing as a guest user.",
-    });
-    
-    navigate("/");
+  const loginWithGoogle = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      
+      if (!credential) {
+        throw new Error("Failed to get Google credentials");
+      }
+
+      const userData: User = {
+        id: result.user.uid,
+        email: result.user.email || '',
+        name: result.user.displayName || undefined,
+        avatar: result.user.photoURL || undefined,
+      };
+
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("token", credential.accessToken || '');
+      
+      setUser(userData);
+      
+      toast({
+        title: "Welcome!",
+        description: "Successfully signed in with Google.",
+      });
+      
+      navigate("/");
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to sign in with Google";
+      setError(errorMessage);
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const login = async (email: string, password: string) => {
@@ -155,6 +179,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const loginAsGuest = () => {
+    const guestUser: User = {
+      id: `guest-${Date.now()}`,
+      email: 'guest@example.com',
+      username: `Guest-${Math.floor(Math.random() * 1000)}`,
+      name: `Guest-${Math.floor(Math.random() * 1000)}`,
+      isGuest: true
+    };
+    
+    setUser(guestUser);
+    localStorage.setItem("user", JSON.stringify(guestUser));
+    
+    toast({
+      title: "Welcome, Guest!",
+      description: "You're browsing as a guest user.",
+    });
+    
+    navigate("/");
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem("token");
@@ -170,6 +214,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     user,
     login,
     signup,
+    loginWithGoogle,
     loginAsGuest,
     logout,
     isLoading,
@@ -189,4 +234,4 @@ export const useAuth = () => {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
-};
+}
