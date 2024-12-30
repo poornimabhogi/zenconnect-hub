@@ -17,7 +17,7 @@ const TopNav = () => {
               <User size={20} />
             </AvatarFallback>
           </Avatar>
-          <span className="text-sm font-medium">{user.username}</span>
+          <span className="text-sm font-medium">{user.name || user.username || user.email}</span>
         </Link>
       ) : (
         <Link to="/login">

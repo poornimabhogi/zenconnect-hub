@@ -8,6 +8,7 @@ interface User {
   name?: string;
   avatar?: string;
   isGuest?: boolean;
+  username?: string; // Added username to the interface
 }
 
 interface AuthContextType {
@@ -22,11 +23,9 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const API_URL = "http://localhost:3000";
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -52,6 +51,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const guestUser: User = {
       id: `guest-${Date.now()}`,
       email: 'guest@example.com',
+      username: `Guest-${Math.floor(Math.random() * 1000)}`,
       name: `Guest-${Math.floor(Math.random() * 1000)}`,
       isGuest: true
     };
@@ -71,7 +71,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${API_URL}/auth/login`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -115,7 +115,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${API_URL}/auth/signup`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -166,8 +166,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     navigate("/login");
   };
 
+  const value = {
+    user,
+    login,
+    signup,
+    loginAsGuest,
+    logout,
+    isLoading,
+    error
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, signup, loginAsGuest, logout, isLoading, error }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
