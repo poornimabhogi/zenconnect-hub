@@ -30,13 +30,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Check for existing session
+    const token = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
-    if (storedUser) {
+    
+    if (token && storedUser) {
       try {
         setUser(JSON.parse(storedUser));
       } catch (e) {
         console.error("Error parsing stored user:", e);
         localStorage.removeItem("user");
+        localStorage.removeItem("token");
       }
     }
     setIsLoading(false);
@@ -59,9 +62,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw new Error(errorData.message || "Login failed");
       }
 
-      const userData = await response.json();
-      setUser(userData);
+      const { user: userData, token } = await response.json();
+      
+      // Store the token and user data
+      localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(userData));
+      
+      setUser(userData);
       
       toast({
         title: "Welcome back!",
@@ -85,6 +92,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem("token");
     localStorage.removeItem("user");
     toast({
       title: "Logged out",
