@@ -5,7 +5,7 @@ import { useToast } from "@/components/ui/use-toast";
 interface User {
   id: string;
   email: string;
-  username: string;
+  name?: string;
   avatar?: string;
   isGuest?: boolean;
 }
@@ -13,6 +13,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
+  signup: (email: string, password: string, name: string) => Promise<void>;
   loginAsGuest: () => void;
   logout: () => void;
   isLoading: boolean;
@@ -51,7 +52,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const guestUser: User = {
       id: `guest-${Date.now()}`,
       email: 'guest@example.com',
-      username: `Guest-${Math.floor(Math.random() * 1000)}`,
+      name: `Guest-${Math.floor(Math.random() * 1000)}`,
       isGuest: true
     };
     
@@ -110,6 +111,50 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const signup = async (email: string, password: string, name: string) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`${API_URL}/auth/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password, name }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Signup failed");
+      }
+
+      const { access_token, ...userData } = await response.json();
+      
+      localStorage.setItem("token", access_token);
+      localStorage.setItem("user", JSON.stringify(userData));
+      
+      setUser(userData);
+      
+      toast({
+        title: "Welcome!",
+        description: "Your account has been created successfully.",
+      });
+      
+      navigate("/");
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
+      setError(errorMessage);
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem("token");
@@ -122,7 +167,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, loginAsGuest, logout, isLoading, error }}>
+    <AuthContext.Provider value={{ user, login, signup, loginAsGuest, logout, isLoading, error }}>
       {children}
     </AuthContext.Provider>
   );

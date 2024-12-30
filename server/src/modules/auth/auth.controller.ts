@@ -11,4 +11,9 @@ export class AuthController {
   async login(@Body() loginDto: { email: string; password: string }) {
     return this.authService.login(loginDto);
   }
+
+  @Post('signup')
+  async signup(@Body() signupDto: { email: string; password: string; name: string }) {
+    return this.authService.signup(signupDto);
+  }
 }
