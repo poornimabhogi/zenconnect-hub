@@ -1,28 +1,10 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
-import { auth, googleProvider } from "@/lib/firebase";
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/components/ui/use-toast';
+import { auth, googleProvider } from '@/lib/firebase';
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-
-interface User {
-  id: string;
-  email: string;
-  name?: string;
-  avatar?: string;
-  isGuest?: boolean;
-  username?: string;
-}
-
-interface AuthContextType {
-  user: User | null;
-  login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string, name: string) => Promise<void>;
-  loginWithGoogle: () => Promise<void>;
-  loginAsGuest: () => void;
-  logout: () => void;
-  isLoading: boolean;
-  error: string | null;
-}
+import { authService } from '@/services/auth.service';
+import { User, AuthContextType } from '@/types/auth.types';
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
@@ -34,16 +16,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { toast } = useToast();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
+    const token = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('user');
     
     if (token && storedUser) {
       try {
         setUser(JSON.parse(storedUser));
       } catch (e) {
-        console.error("Error parsing stored user:", e);
-        localStorage.removeItem("user");
-        localStorage.removeItem("token");
+        console.error('Error parsing stored user:', e);
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
       }
     }
     setIsLoading(false);
@@ -57,7 +39,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const credential = GoogleAuthProvider.credentialFromResult(result);
       
       if (!credential) {
-        throw new Error("Failed to get Google credentials");
+        throw new Error('Failed to get Google credentials');
       }
 
       const userData: User = {
@@ -67,24 +49,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         avatar: result.user.photoURL || undefined,
       };
 
-      localStorage.setItem("user", JSON.stringify(userData));
-      localStorage.setItem("token", credential.accessToken || '');
+      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('token', credential.accessToken || '');
       
       setUser(userData);
-      
       toast({
-        title: "Welcome!",
-        description: "Successfully signed in with Google.",
+        title: 'Welcome!',
+        description: 'Successfully signed in with Google.',
       });
       
-      navigate("/");
+      navigate('/');
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Failed to sign in with Google";
+      const errorMessage = error instanceof Error ? error.message : 'Failed to sign in with Google';
       setError(errorMessage);
       toast({
-        title: "Error",
+        title: 'Error',
         description: errorMessage,
-        variant: "destructive",
+        variant: 'destructive',
       });
     } finally {
       setIsLoading(false);
@@ -95,39 +76,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Login failed");
-      }
-
-      const { user: userData, token } = await response.json();
+      const { user: userData, token } = await authService.login(email, password);
       
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(userData));
       
       setUser(userData);
-      
       toast({
-        title: "Welcome back!",
-        description: "You have successfully logged in.",
+        title: 'Welcome back!',
+        description: 'You have successfully logged in.',
       });
       
-      navigate("/");
+      navigate('/');
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
       setError(errorMessage);
       toast({
-        title: "Error",
+        title: 'Error',
         description: errorMessage,
-        variant: "destructive",
+        variant: 'destructive',
       });
       throw error;
     } finally {
@@ -139,39 +106,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/signup`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password, name }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Signup failed");
-      }
-
-      const { access_token, ...userData } = await response.json();
+      const { access_token, ...userData } = await authService.signup(email, password, name);
       
-      localStorage.setItem("token", access_token);
-      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem('token', access_token);
+      localStorage.setItem('user', JSON.stringify(userData));
       
       setUser(userData);
-      
       toast({
-        title: "Welcome!",
-        description: "Your account has been created successfully.",
+        title: 'Welcome!',
+        description: 'Your account has been created successfully.',
       });
       
-      navigate("/");
+      navigate('/');
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
       setError(errorMessage);
       toast({
-        title: "Error",
+        title: 'Error',
         description: errorMessage,
-        variant: "destructive",
+        variant: 'destructive',
       });
       throw error;
     } finally {
@@ -189,25 +142,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
     
     setUser(guestUser);
-    localStorage.setItem("user", JSON.stringify(guestUser));
-    
+    localStorage.setItem('user', JSON.stringify(guestUser));
     toast({
-      title: "Welcome, Guest!",
+      title: 'Welcome, Guest!',
       description: "You're browsing as a guest user.",
     });
     
-    navigate("/");
+    navigate('/');
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     toast({
-      title: "Logged out",
-      description: "You have been successfully logged out.",
+      title: 'Logged out',
+      description: 'You have been successfully logged out.',
     });
-    navigate("/login");
+    navigate('/login');
   };
 
   const value = {
@@ -231,7 +183,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-}
+};
