@@ -7,27 +7,19 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 const TopNav = () => {
   const { user, logout } = useAuth();
 
-  const displayName = user?.name || user?.username || user?.email;
+  const displayName = user?.name || user?.username || user?.email || "Guest";
 
   return (
     <nav className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 py-3 px-6 flex justify-between items-center z-50">
-      {user ? (
-        <Link to="/profile" className="flex items-center gap-2 text-gray-700 hover:text-gray-900">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src={user.avatar || ""} />
-            <AvatarFallback>
-              <User size={20} />
-            </AvatarFallback>
-          </Avatar>
-          <span className="text-sm font-medium">{displayName}</span>
-        </Link>
-      ) : (
-        <Link to="/login">
-          <Button variant="ghost" size="sm">
-            Login
-          </Button>
-        </Link>
-      )}
+      <Link to="/profile" className="flex items-center gap-2 text-gray-700 hover:text-gray-900">
+        <Avatar className="h-8 w-8">
+          <AvatarImage src={user?.avatar || ""} />
+          <AvatarFallback>
+            <User size={20} />
+          </AvatarFallback>
+        </Avatar>
+        <span className="text-sm font-medium">{displayName}</span>
+      </Link>
       <div className="flex items-center gap-4">
         <Link to="/zencoins" className="flex items-center gap-1">
           <Coins size={24} className="text-zencoin" />
