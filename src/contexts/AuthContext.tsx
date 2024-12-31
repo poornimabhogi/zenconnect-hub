@@ -6,7 +6,7 @@ import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { authService } from '@/services/auth.service';
 import { User, AuthContextType } from '@/types/auth.types';
 
-const AuthContext = createContext<AuthContextType | null>(null);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
