@@ -14,6 +14,9 @@ export class User {
   @Column({ nullable: true })
   name: string;
 
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+  zenCoins: number;
+
   @CreateDateColumn()
   createdAt: Date;
 

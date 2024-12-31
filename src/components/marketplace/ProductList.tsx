@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { useState, useEffect } from "react";
+import { useZenCoins } from "@/contexts/ZenCoinsContext";
 import type { Product } from "@/pages/Marketplace";
 
 interface ProductListProps {
@@ -19,6 +20,7 @@ interface ProductListProps {
 
 const ProductList = ({ products, selectedCategory, onAddToCart }: ProductListProps) => {
   const { toast } = useToast();
+  const { addCoins, calculateCoinsFromUSD } = useZenCoins();
   const [wishlist, setWishlist] = useState<string[]>([]);
 
   // Load wishlist from localStorage on component mount
@@ -60,6 +62,13 @@ const ProductList = ({ products, selectedCategory, onAddToCart }: ProductListPro
     });
   };
 
+  const handleAddToCart = (product: Product) => {
+    onAddToCart(product.id);
+    // Calculate and add ZenCoins based on purchase price
+    const earnedCoins = calculateCoinsFromUSD(product.price);
+    addCoins(earnedCoins);
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {filteredProducts.map((product) => (
@@ -97,7 +106,7 @@ const ProductList = ({ products, selectedCategory, onAddToCart }: ProductListPro
           <CardFooter className="p-4">
             <Button
               className="w-full bg-zenpurple hover:bg-zenpurple/90"
-              onClick={() => onAddToCart(product.id)}
+              onClick={() => handleAddToCart(product)}
             >
               Add to Cart
             </Button>
