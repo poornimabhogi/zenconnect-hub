@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const formSchema = z.object({
   username: z.string().min(4, "Username must be at least 4 characters"),
@@ -19,7 +20,8 @@ const formSchema = z.object({
 });
 
 export function LoginForm() {
-  const { login, isLoading } = useAuth();
+  const { login, loginAsGuest, isLoading } = useAuth();
+  const navigate = useNavigate();
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -32,10 +34,16 @@ export function LoginForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       await login(values.username, values.password);
+      navigate('/');
     } catch (error) {
       console.error('Login error:', error);
     }
   }
+
+  const handleGuestLogin = () => {
+    loginAsGuest();
+    navigate('/');
+  };
 
   return (
     <Form {...form}>
@@ -68,6 +76,15 @@ export function LoginForm() {
         />
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? "Logging in..." : "Login"}
+        </Button>
+        <Button 
+          type="button" 
+          variant="secondary" 
+          className="w-full" 
+          onClick={handleGuestLogin}
+          disabled={isLoading}
+        >
+          Continue as Guest
         </Button>
       </form>
     </Form>

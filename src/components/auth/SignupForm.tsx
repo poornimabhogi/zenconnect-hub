@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const formSchema = z.object({
   username: z.string().min(4, "Username must be at least 4 characters"),
@@ -25,6 +26,7 @@ const formSchema = z.object({
 
 export function SignupForm() {
   const { signup, isLoading } = useAuth();
+  const navigate = useNavigate();
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -39,6 +41,7 @@ export function SignupForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       await signup(values.username, values.email, values.password);
+      navigate('/');
     } catch (error) {
       console.error('Signup error:', error);
     }
