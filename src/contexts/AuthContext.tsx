@@ -72,11 +72,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const login = async (email: string, password: string) => {
+  const login = async (username: string, password: string) => {
     setIsLoading(true);
     setError(null);
     try {
-      const { user: userData, access_token } = await authService.login(email, password);
+      const { user: userData, access_token } = await authService.login(username, password);
       
       localStorage.setItem('token', access_token);
       localStorage.setItem('user', JSON.stringify(userData));
@@ -102,11 +102,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const signup = async (email: string, password: string, name: string) => {
+  const signup = async (username: string, email: string, password: string) => {
     setIsLoading(true);
     setError(null);
     try {
-      const { user: userData, access_token } = await authService.signup(email, password, name);
+      const { user: userData, access_token } = await authService.signup(username, email, password);
       
       localStorage.setItem('token', access_token);
       localStorage.setItem('user', JSON.stringify(userData));
@@ -135,9 +135,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const loginAsGuest = () => {
     const guestUser: User = {
       id: `guest-${Date.now()}`,
-      email: 'guest@example.com',
       username: `Guest-${Math.floor(Math.random() * 1000)}`,
-      name: `Guest-${Math.floor(Math.random() * 1000)}`,
       isGuest: true
     };
     
