@@ -44,4 +44,22 @@ export const authService = {
       access_token: token,
     };
   },
+
+  async handleGoogleUser(googleUser: any): Promise<{ user: User; access_token: string }> {
+    // This method would handle sending Google user data to your backend
+    // and receiving your application's JWT token in response
+    const response = await fetch(`${API_URL}/auth/google`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(googleUser),
+    });
+
+    if (!response.ok) {
+      throw new Error('Google authentication failed');
+    }
+
+    return response.json();
+  }
 };
