@@ -8,7 +8,7 @@ import { SignupForm } from "@/components/auth/SignupForm";
 import { Loader2 } from "lucide-react";
 
 const Login = () => {
-  const { loginWithGoogle, loginAsGuest, isLoading } = useAuth();
+  const { loginWithGoogle, isLoading } = useAuth();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
@@ -59,17 +59,6 @@ const Login = () => {
             />
           )}
           Continue with Google
-        </Button>
-
-        <Separator className="my-4" />
-
-        <Button
-          variant="outline"
-          className="w-full"
-          onClick={loginAsGuest}
-          disabled={isLoading}
-        >
-          Continue as Guest
         </Button>
       </Card>
     </div>

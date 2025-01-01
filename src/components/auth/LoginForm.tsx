@@ -13,30 +13,37 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
 
 const formSchema = z.object({
-  username: z.string().min(4, "Username must be at least 4 characters"),
+  email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 export function LoginForm() {
   const { login, loginAsGuest, isLoading } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      await login(values.username, values.password);
+      await login(values.email, values.password);
       navigate('/');
     } catch (error) {
-      console.error('Login error:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to login';
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: errorMessage,
+      });
     }
   }
 
@@ -50,12 +57,12 @@ export function LoginForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
-          name="username"
+          name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="Enter your username" {...field} />
+                <Input type="email" placeholder="Enter your email" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
