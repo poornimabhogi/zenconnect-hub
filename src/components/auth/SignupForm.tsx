@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,51 +12,57 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
+import { useForm } from "react-hook-form";
 
 const formSchema = z.object({
-  username: z.string().min(4, "Username must be at least 4 characters"),
+  name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
 });
 
 export function SignupForm() {
-  const { signup, isLoading } = useAuth();
+  const { signup } = useAuth();
   const navigate = useNavigate();
-  
-  const form = useForm<z.infer<typeof formSchema>>({
+  const { toast } = useToast();
+
+  const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      name: "",
       email: "",
       password: "",
-      confirmPassword: "",
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await signup(values.username, values.email, values.password);
-      navigate('/');
+      await signup(values.name, values.email, values.password);
+      toast({
+        title: "Success",
+        description: "Account created successfully",
+      });
+      navigate("/");
     } catch (error) {
-      console.error('Signup error:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to create account",
+      });
     }
-  }
+  };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
-          name="username"
+          name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="Choose a username" {...field} />
+                <Input placeholder="Enter your name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -70,7 +75,7 @@ export function SignupForm() {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="Enter your email" {...field} />
+                <Input placeholder="Enter your email" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -83,27 +88,14 @@ export function SignupForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="Choose a password" {...field} />
+                <Input type="password" placeholder="Enter your password" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="confirmPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Confirm Password</FormLabel>
-              <FormControl>
-                <Input type="password" placeholder="Confirm your password" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? "Creating account..." : "Sign Up"}
+        <Button type="submit" className="w-full">
+          Sign Up
         </Button>
       </form>
     </Form>
