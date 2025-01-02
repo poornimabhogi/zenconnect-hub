@@ -6,7 +6,16 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'rea
 import { useAuth } from '@/contexts/AuthContext';
 import { Clock, Target, Users } from 'lucide-react';
 
-const Stack = createNativeStackNavigator();
+// Define the type for our navigation stack parameters
+type RootStackParamList = {
+  Login: undefined;
+  Home: undefined;
+  Games: undefined;
+  Marketplace: undefined;
+  Profile: undefined;
+};
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 // Native screen components
 const HomeScreen = ({ navigation }) => {
@@ -103,7 +112,7 @@ const App = () => {
 
   return (
     <SafeAreaProvider>
-      <NavigationContainer id="navigation">
+      <NavigationContainer>
         <Stack.Navigator
           screenOptions={{
             headerStyle: {
