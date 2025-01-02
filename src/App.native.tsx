@@ -2,18 +2,59 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
 import { useAuth } from '@/contexts/AuthContext';
+import { Clock, Target, Users } from 'lucide-react';
 
 const Stack = createNativeStackNavigator();
 
 // Native screen components
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>TimeCapsule</Text>
-      <Text style={styles.subtitle}>Preserve your moments, connect with others</Text>
-    </View>
+    <ScrollView style={styles.scrollView}>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>TimeCapsule</Text>
+          <Text style={styles.subtitle}>Preserve your moments, connect with others</Text>
+        </View>
+
+        <View style={styles.statsContainer}>
+          <TouchableOpacity style={styles.statCard}>
+            <Clock size={24} color="#6366f1" />
+            <Text style={styles.statTitle}>Time Captured</Text>
+            <Text style={styles.statValue}>2h 15m</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.statCard}>
+            <Target size={24} color="#6366f1" />
+            <Text style={styles.statTitle}>Daily Goal</Text>
+            <Text style={styles.statValue}>4h</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.statCard}>
+            <Users size={24} color="#6366f1" />
+            <Text style={styles.statTitle}>Connected</Text>
+            <Text style={styles.statValue}>24</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.actionsContainer}>
+          <TouchableOpacity 
+            style={styles.actionButton}
+            onPress={() => navigation.navigate('Games')}
+          >
+            <Text style={styles.actionButtonText}>Play Games</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.actionButton}
+            onPress={() => navigation.navigate('Marketplace')}
+          >
+            <Text style={styles.actionButtonText}>Visit Marketplace</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </ScrollView>
   );
 };
 
@@ -62,7 +103,7 @@ const App = () => {
 
   return (
     <SafeAreaProvider>
-      <NavigationContainer>
+      <NavigationContainer id="navigation">
         <Stack.Navigator
           screenOptions={{
             headerStyle: {
@@ -108,15 +149,20 @@ const App = () => {
 };
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
     padding: 20,
   },
+  header: {
+    alignItems: 'center',
+    marginBottom: 30,
+  },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 10,
@@ -125,7 +171,50 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
     textAlign: 'center',
-    marginBottom: 20,
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 30,
+  },
+  statCard: {
+    backgroundColor: '#f8fafc',
+    padding: 15,
+    borderRadius: 12,
+    alignItems: 'center',
+    width: '30%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  statTitle: {
+    fontSize: 12,
+    color: '#64748b',
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  statValue: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginTop: 4,
+  },
+  actionsContainer: {
+    gap: 12,
+  },
+  actionButton: {
+    backgroundColor: '#6366f1',
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  actionButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
   button: {
     backgroundColor: '#6366f1',
