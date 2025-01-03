@@ -21,7 +21,10 @@ const App = () => {
       <NavigationContainer>
         <Stack.Navigator 
           id="RootNavigator"
-          screenOptions={navigationStyles}
+          screenOptions={{
+            ...navigationStyles,
+            headerShown: true
+          }}
         >
           {!user ? (
             <Stack.Screen 
@@ -34,22 +37,18 @@ const App = () => {
               <Stack.Screen 
                 name="Home" 
                 component={HomeScreen}
-                options={{ title: 'TimeCapsule' }}
               />
               <Stack.Screen 
                 name="Games" 
                 component={GamesScreen}
-                options={{ title: 'Games' }}
               />
               <Stack.Screen 
                 name="Marketplace" 
                 component={MarketplaceScreen}
-                options={{ title: 'Marketplace' }}
               />
               <Stack.Screen 
                 name="Profile" 
                 component={ProfileScreen}
-                options={{ title: 'Profile' }}
               />
             </>
           )}
