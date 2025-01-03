@@ -63,21 +63,88 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 12,
   },
+  secondaryButton: {
+    backgroundColor: '#94a3b8',
+  },
   actionButtonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
   },
-  button: {
-    backgroundColor: '#6366f1',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 8,
-    marginTop: 10,
+  gamesGrid: {
+    flexDirection: 'column',
+    gap: 16,
   },
-  buttonText: {
-    color: '#fff',
+  gameCard: {
+    backgroundColor: '#f8fafc',
+    padding: 20,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  gameTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 8,
+  },
+  gameDescription: {
+    fontSize: 14,
+    color: '#666',
+  },
+  productsGrid: {
+    flexDirection: 'column',
+    gap: 16,
+  },
+  productCard: {
+    backgroundColor: '#f8fafc',
+    borderRadius: 12,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  productImage: {
+    width: '100%',
+    height: 200,
+    resizeMode: 'cover',
+  },
+  productTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    padding: 12,
+  },
+  productPrice: {
     fontSize: 16,
+    color: '#6366f1',
     fontWeight: '600',
+    padding: 12,
+    paddingTop: 0,
+  },
+  profileHeader: {
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  profileAvatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 16,
+  },
+  profileName: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 8,
+  },
+  profileEmail: {
+    fontSize: 16,
+    color: '#666',
   },
 });

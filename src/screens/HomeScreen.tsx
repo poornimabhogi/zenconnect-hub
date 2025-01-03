@@ -1,9 +1,13 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { Clock, Target, Users } from 'lucide-react';
 import { styles } from '../styles/common';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../types/navigation';
 
-export const HomeScreen = ({ navigation }) => {
+type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+
+export const HomeScreen = ({ navigation }: Props) => {
   return (
     <ScrollView style={styles.scrollView}>
       <View style={styles.container}>

@@ -19,7 +19,10 @@ const App = () => {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <Stack.Navigator screenOptions={navigationStyles}>
+        <Stack.Navigator 
+          id="RootNavigator"
+          screenOptions={navigationStyles}
+        >
           {!user ? (
             <Stack.Screen 
               name="Login" 
