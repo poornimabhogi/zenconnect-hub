@@ -9,7 +9,6 @@ import { LoginScreen } from './screens/LoginScreen';
 import { GamesScreen } from './screens/GamesScreen';
 import { MarketplaceScreen } from './screens/MarketplaceScreen';
 import { ProfileScreen } from './screens/ProfileScreen';
-import { navigationStyles } from './styles/navigation';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -20,7 +19,15 @@ const App = () => {
     <SafeAreaProvider>
       <NavigationContainer>
         <Stack.Navigator 
-          screenOptions={navigationStyles}
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: '#6366f1',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+          }}
         >
           {!user ? (
             <Stack.Screen 
