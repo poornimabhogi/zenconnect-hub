@@ -20,7 +20,6 @@ const App = () => {
     <SafeAreaProvider>
       <NavigationContainer>
         <Stack.Navigator 
-          id="root"
           screenOptions={{
             ...navigationStyles,
             headerShown: true
